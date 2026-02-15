@@ -21,6 +21,22 @@ namespace Gameplay.Units
         [SerializeField] private int colorId = 1;
         [SerializeField] private TextMeshPro capacityText;
 
+        [Header("Visual Settings")]
+        [SerializeField] private Sprite unitSprite;
+        [SerializeField] private float baseSpriteSize = 0.32f; // Used for scaling calculation
+        [SerializeField] private List<Color> unitColors = new List<Color>
+        {
+            Color.white,                           // 0
+            new Color(0.9f, 0.2f, 0.2f, 1f),     // 1 - red
+            new Color(0.2f, 0.4f, 0.9f, 1f),     // 2 - blue
+            new Color(0.2f, 0.8f, 0.3f, 1f),     // 3 - green
+            new Color(0.95f, 0.85f, 0.1f, 1f),   // 4 - yellow
+            new Color(0.8f, 0.3f, 0.8f, 1f),     // 5 - purple
+            new Color(1f, 0.5f, 0.1f, 1f),        // 6 - orange
+            new Color(0.1f, 0.8f, 0.8f, 1f),     // 7 - cyan
+            new Color(0.9f, 0.5f, 0.7f, 1f),     // 8 - pink
+        };
+
         private int currentCapacity;
         private GridManager gridManager;
         private List<ConveyorBelt.WaypointInfo> waypointInfos;
@@ -39,20 +55,6 @@ namespace Gameplay.Units
 
         // Linked unit support
         public int LinkedId { get; set; } = -1; // -1 = not linked
-
-        // Color mapping matching GridCellView
-        private static readonly Color[] UnitColors = new Color[]
-        {
-            Color.white,                           // 0
-            new Color(0.9f, 0.2f, 0.2f, 1f),     // 1 - red
-            new Color(0.2f, 0.4f, 0.9f, 1f),     // 2 - blue
-            new Color(0.2f, 0.8f, 0.3f, 1f),     // 3 - green
-            new Color(0.95f, 0.85f, 0.1f, 1f),   // 4 - yellow
-            new Color(0.8f, 0.3f, 0.8f, 1f),     // 5 - purple
-            new Color(1f, 0.5f, 0.1f, 1f),        // 6 - orange
-            new Color(0.1f, 0.8f, 0.8f, 1f),     // 7 - cyan
-            new Color(0.9f, 0.5f, 0.7f, 1f),     // 8 - pink
-        };
 
         public void Initialize(int colorId, int capacity)
         {
@@ -78,6 +80,10 @@ namespace Gameplay.Units
             if (spriteRenderer != null)
             {
                 spriteRenderer.sortingOrder = 10;
+                if (unitSprite != null)
+                {
+                    spriteRenderer.sprite = unitSprite;
+                }
             }
 
             if (boxCollider == null)
@@ -173,8 +179,8 @@ namespace Gameplay.Units
         {
             if (spriteRenderer != null)
             {
-                if (colorId >= 0 && colorId < UnitColors.Length)
-                    spriteRenderer.color = UnitColors[colorId];
+                if (colorId >= 0 && colorId < unitColors.Count)
+                    spriteRenderer.color = unitColors[colorId];
                 else
                     spriteRenderer.color = Color.white;
             }
@@ -215,16 +221,22 @@ namespace Gameplay.Units
         /// </summary>
         public void SetScale(float cellSize)
         {
-            float spriteSize = 0.32f; // native sprite size
+            float spriteSize = baseSpriteSize;
+            if (unitSprite != null)
+            {
+                // Use actual sprite bounds if available, but keep baseSpriteSize as a reference/override
+                // Or just rely on baseSpriteSize as the "expected" size of the sprite in units
+            }
+            
             float desiredSize = cellSize * 0.8f;
             float scale = desiredSize / spriteSize;
             transform.localScale = Vector3.one * scale;
         }
 
-        public static Color GetUnitColor(int colorId)
+        public Color GetUnitColor(int colorId)
         {
-            if (colorId >= 0 && colorId < UnitColors.Length)
-                return UnitColors[colorId];
+            if (colorId >= 0 && colorId < unitColors.Count)
+                return unitColors[colorId];
             return Color.white;
         }
     }

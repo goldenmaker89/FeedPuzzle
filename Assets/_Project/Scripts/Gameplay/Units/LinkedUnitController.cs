@@ -16,6 +16,18 @@ namespace Gameplay.Units
         [SerializeField] private UnitController unitB;
         [SerializeField] private float spacing = 0.5f;
 
+        public void SetSpacing(float newSpacing)
+        {
+            spacing = newSpacing;
+            UpdatePositions();
+        }
+
+        private void UpdatePositions()
+        {
+            if (unitA != null) unitA.transform.localPosition = new Vector3(-spacing * 0.5f, 0, 0);
+            if (unitB != null) unitB.transform.localPosition = new Vector3(spacing * 0.5f, 0, 0);
+        }
+
         public UnitController UnitA => unitA;
         public UnitController UnitB => unitB;
 
@@ -43,9 +55,7 @@ namespace Gameplay.Units
             unitA.transform.SetParent(transform);
             unitB.transform.SetParent(transform);
 
-            // Position them relative to container
-            unitA.transform.localPosition = new Vector3(-spacing * 0.5f, 0, 0);
-            unitB.transform.localPosition = new Vector3(spacing * 0.5f, 0, 0);
+            UpdatePositions();
 
             unitA.SetState(UnitState.InQueue);
             unitB.SetState(UnitState.InQueue);

@@ -17,6 +17,11 @@ namespace Gameplay.Mechanics
         [SerializeField] private float speed = 3.0f;
         [SerializeField] private int maxCapacity = 5;
         [SerializeField] private float pathOffset = 0.5f; // Distance from grid edge
+        
+        [Header("Visual Settings")]
+        [SerializeField] private Material conveyorMaterial;
+        [SerializeField] private float conveyorWidth = 0.2f;
+        [SerializeField] private float textureTiling = 1.0f;
 
         private List<Vector3> pathPoints = new List<Vector3>();
         private List<WaypointInfo> waypointInfos = new List<WaypointInfo>(); // parallel to pathPoints
@@ -127,16 +132,33 @@ namespace Gameplay.Mechanics
 
             lineRenderer.positionCount = pathPoints.Count;
             lineRenderer.SetPositions(pathPoints.ToArray());
-            lineRenderer.startWidth = 0.08f;
-            lineRenderer.endWidth = 0.08f;
+            lineRenderer.startWidth = conveyorWidth;
+            lineRenderer.endWidth = conveyorWidth;
             lineRenderer.loop = false;
             lineRenderer.useWorldSpace = true;
             lineRenderer.sortingOrder = -1;
+            lineRenderer.textureMode = LineTextureMode.Tile;
 
-            // Create a simple material
-            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-            lineRenderer.startColor = new Color(0.3f, 0.8f, 1f, 0.5f);
-            lineRenderer.endColor = new Color(0.3f, 0.8f, 1f, 0.5f);
+            if (conveyorMaterial != null)
+            {
+                lineRenderer.material = conveyorMaterial;
+                lineRenderer.material.mainTextureScale = new Vector2(textureTiling * pathPoints.Count, 1);
+            }
+            else
+            {
+                // Create a simple material if none assigned
+                lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+                lineRenderer.startColor = new Color(0.3f, 0.8f, 1f, 0.5f);
+                lineRenderer.endColor = new Color(0.3f, 0.8f, 1f, 0.5f);
+            }
+        }
+
+        public void UpdateVisualSettings(float width, Material mat, float tiling)
+        {
+            conveyorWidth = width;
+            conveyorMaterial = mat;
+            textureTiling = tiling;
+            CreateVisual();
         }
 
         public bool CanAddUnit()

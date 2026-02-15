@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Grid.GridManager
   width: 10
-  height: 10
+  height: 20
   cellSize: 0.4
   cellPrefab: {fileID: 5731184532907476555, guid: e0359f8a515d35044a074b6005030ac4, type: 3}
 --- !u!4 &417741326
@@ -573,6 +573,9 @@ MonoBehaviour:
   speed: 3
   maxCapacity: 5
   pathOffset: 0.5
+  conveyorMaterial: {fileID: 2100000, guid: be000a436a112f7489c7d390856b119f, type: 2}
+  conveyorWidth: 0.2
+  textureTiling: 1
 --- !u!4 &1414317006
 Transform:
   m_ObjectHideFlags: 0
@@ -618,6 +621,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Mechanics.LandingStrip
   capacity: 5
+  slotSpacingMultiplier: 1.5
+  slotSprite: {fileID: 21300000, guid: 30aa74f567841ab4f8a1ba4ca3b3499e, type: 3}
+  emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.3}
+  occupiedSlotColor: {r: 0.5, g: 0.5, b: 0.2, a: 0.3}
+  labelOffset: {x: 0, y: 0.5, z: 0}
+  labelFontSize: 2.5
 --- !u!4 &1691617259
 Transform:
   m_ObjectHideFlags: 0

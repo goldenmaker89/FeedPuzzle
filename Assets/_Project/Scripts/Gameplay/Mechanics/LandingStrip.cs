@@ -14,6 +14,14 @@ namespace Gameplay.Mechanics
     public class LandingStrip : MonoBehaviour
     {
         [SerializeField] private int capacity = 5;
+        
+        [Header("Visual Settings")]
+        [SerializeField] private float slotSpacingMultiplier = 1.5f;
+        [SerializeField] private Sprite slotSprite;
+        [SerializeField] private Color emptySlotColor = new Color(0.3f, 0.3f, 0.3f, 0.3f);
+        [SerializeField] private Color occupiedSlotColor = new Color(0.5f, 0.5f, 0.2f, 0.3f);
+        [SerializeField] private Vector3 labelOffset = new Vector3(0, 0.5f, 0);
+        [SerializeField] private float labelFontSize = 2.5f;
 
         private float slotSpacing = 0.6f;
         private List<UnitController> dockedUnits = new List<UnitController>();
@@ -34,7 +42,7 @@ namespace Gameplay.Mechanics
         {
             conveyorBelt = conveyor;
             cellSize = cellSz;
-            slotSpacing = cellSize * 1.5f;
+            slotSpacing = cellSize * slotSpacingMultiplier;
             CreateVisuals();
         }
 
@@ -53,14 +61,21 @@ namespace Gameplay.Mechanics
                 GameObject slotObj = new GameObject($"LandingSlot_{i}");
                 slotObj.transform.SetParent(transform);
                 slotObj.transform.localPosition = new Vector3(i * slotSpacing, 0, 0);
-                slotObj.transform.localScale = Vector3.one * (cellSize * 0.9f / 0.32f);
+                
+                // Scale based on sprite size (assuming 32px base if null, or actual size)
+                float spriteBaseSize = slotSprite ? slotSprite.bounds.size.x : 1f;
+                // If sprite is null, Unity uses a 1x1 unit square (usually 100ppu => 0.01 world units? No, default sprite is 1x1 world unit usually if created via CreatePrimitive, but here we add SpriteRenderer)
+                // Actually if sprite is null, nothing renders. We need a default sprite or the user must assign one.
+                // For now, let's assume user assigns one or we use a default white texture created at runtime if needed.
+                
+                float scale = (cellSize * 0.9f) / (spriteBaseSize > 0 ? spriteBaseSize : 1f);
+                if (slotSprite == null) scale = cellSize * 0.9f; // Fallback scaling
+
+                slotObj.transform.localScale = Vector3.one * scale;
 
                 SpriteRenderer sr = slotObj.AddComponent<SpriteRenderer>();
-                // Use the same square sprite as units if available
-                var unitSprite = LoadSquareSprite();
-                if (unitSprite != null)
-                    sr.sprite = unitSprite;
-                sr.color = new Color(0.3f, 0.3f, 0.3f, 0.3f);
+                sr.sprite = slotSprite;
+                sr.color = emptySlotColor;
                 sr.sortingOrder = 1;
                 slotVisuals.Add(sr);
             }
@@ -70,24 +85,26 @@ namespace Gameplay.Mechanics
             {
                 GameObject labelObj = new GameObject("LandingLabel");
                 labelObj.transform.SetParent(transform);
-                labelObj.transform.localPosition = new Vector3((capacity - 1) * slotSpacing * 0.5f, cellSize * 1.2f, 0);
+                // Center label above the strip
+                float centerX = (capacity - 1) * slotSpacing * 0.5f;
+                labelObj.transform.localPosition = new Vector3(centerX, 0, 0) + labelOffset;
+                
                 labelText = labelObj.AddComponent<TextMeshPro>();
                 labelText.text = $"LANDING STRIP (0/{capacity})";
-                labelText.fontSize = 2.5f;
+                labelText.fontSize = labelFontSize;
                 labelText.alignment = TextAlignmentOptions.Center;
                 labelText.color = new Color(0.8f, 0.8f, 0.2f, 1f);
                 labelText.sortingOrder = 20;
                 var rt = labelText.GetComponent<RectTransform>();
-                if (rt != null) rt.sizeDelta = new Vector2(5f, 0.5f);
+                if (rt != null) rt.sizeDelta = new Vector2(10f, 1f);
             }
-        }
-
-        private Sprite LoadSquareSprite()
-        {
-            // Try to load the same square sprite used by units
-            // The sprite is at Assets/_Project/Art/Gameplay/Square.png but we can't use AssetDatabase at runtime
-            // Instead, just return null - the SpriteRenderer will use a default white square
-            return null;
+            else
+            {
+                 // Update position if already exists
+                float centerX = (capacity - 1) * slotSpacing * 0.5f;
+                labelText.transform.localPosition = new Vector3(centerX, 0, 0) + labelOffset;
+                labelText.fontSize = labelFontSize;
+            }
         }
 
         public bool HasSpace(int requiredSlots = 1)
@@ -253,9 +270,9 @@ namespace Gameplay.Mechanics
             {
                 if (slotVisuals[i] == null) continue;
                 if (i < dockedUnits.Count)
-                    slotVisuals[i].color = new Color(0.5f, 0.5f, 0.2f, 0.3f); // occupied indicator
+                    slotVisuals[i].color = occupiedSlotColor;
                 else
-                    slotVisuals[i].color = new Color(0.3f, 0.3f, 0.3f, 0.3f); // empty slot
+                    slotVisuals[i].color = emptySlotColor;
             }
         }
 
