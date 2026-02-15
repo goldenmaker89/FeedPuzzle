@@ -16,6 +16,7 @@ namespace Gameplay.Mechanics
         [SerializeField] private int slotCount = 4;
         [SerializeField] private int maxQueueDepth = 6;
         [SerializeField] private UnitController unitPrefab;
+        [SerializeField] private List<UnitController> unitPrefabsByColor;
 
         private List<List<UnitController>> slots = new List<List<UnitController>>();
         private ConveyorBelt conveyorBelt;
@@ -102,7 +103,13 @@ namespace Gameplay.Mechanics
             if (slotIndex < 0 || slotIndex >= slotCount) return null;
             if (slots[slotIndex].Count >= maxQueueDepth) return null;
 
-            UnitController unit = Instantiate(unitPrefab, transform);
+            UnitController prefabToUse = unitPrefab;
+            if (unitPrefabsByColor != null && colorId >= 0 && colorId < unitPrefabsByColor.Count && unitPrefabsByColor[colorId] != null)
+            {
+                prefabToUse = unitPrefabsByColor[colorId];
+            }
+
+            UnitController unit = Instantiate(prefabToUse, transform);
             unit.Initialize(colorId, capacity);
             unit.SetScale(cellSize);
             unit.gameObject.name = $"Unit_S{slotIndex}_C{colorId}_Cap{capacity}";

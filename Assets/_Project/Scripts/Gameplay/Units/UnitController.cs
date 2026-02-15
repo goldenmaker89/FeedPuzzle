@@ -22,6 +22,7 @@ namespace Gameplay.Units
         [SerializeField] private TextMeshPro capacityText;
 
         [Header("Visual Settings")]
+        [SerializeField] private bool useProgrammaticColor = true;
         [SerializeField] private Sprite unitSprite;
         [SerializeField] private float baseSpriteSize = 0.32f; // Used for scaling calculation
         [SerializeField] private List<Color> unitColors = new List<Color>
@@ -177,7 +178,7 @@ namespace Gameplay.Units
 
         private void UpdateVisuals()
         {
-            if (spriteRenderer != null)
+            if (spriteRenderer != null && useProgrammaticColor)
             {
                 if (colorId >= 0 && colorId < unitColors.Count)
                     spriteRenderer.color = unitColors[colorId];

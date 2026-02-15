@@ -573,7 +573,7 @@ MonoBehaviour:
   speed: 3
   maxCapacity: 5
   pathOffset: 0.5
-  conveyorMaterial: {fileID: 0}
+  conveyorMaterial: {fileID: 2100000, guid: be000a436a112f7489c7d390856b119f, type: 2}
   conveyorWidth: 0.2
   textureTiling: 1
 --- !u!4 &1414317006
