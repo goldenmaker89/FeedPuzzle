@@ -573,7 +573,7 @@ MonoBehaviour:
   speed: 3
   maxCapacity: 5
   pathOffset: 0.5
-  conveyorMaterial: {fileID: 2100000, guid: be000a436a112f7489c7d390856b119f, type: 2}
+  conveyorMaterial: {fileID: 0}
   conveyorWidth: 0.2
   textureTiling: 1
 --- !u!4 &1414317006
@@ -622,7 +622,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Mechanics.LandingStrip
   capacity: 5
   slotSpacingMultiplier: 1.5
-  slotSprite: {fileID: 21300000, guid: 30aa74f567841ab4f8a1ba4ca3b3499e, type: 3}
+  slotSprite: {fileID: -2127423738879365133, guid: 0b827a5982cb3044d91d65572fa2ae13, type: 3}
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.3}
   occupiedSlotColor: {r: 0.5, g: 0.5, b: 0.2, a: 0.3}
   labelOffset: {x: 0, y: 0.5, z: 0}
