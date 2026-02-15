@@ -188,7 +188,7 @@ namespace Gameplay.Units
 
             if (capacityText != null)
             {
-                capacityText.text = $"{currentCapacity}/{maxCapacity}";
+                capacityText.text = $"{currentCapacity}";
             }
 
             // Update name for debugging
