@@ -16,6 +16,7 @@ namespace Core
         [SerializeField] private int gridHeight = 8;
         [SerializeField] private int numColors = 4;
         [SerializeField] private float fillPercent = 0.6f;
+        [SerializeField] private float verticalOffset = 0f;
 
         private void Start()
         {
@@ -137,7 +138,7 @@ namespace Core
             float topY = grid.GetTopRight().y + 1f;
 
             // Center between top of grid and bottom of base
-            float centerY = (topY + baseBottomY) * 0.5f;
+            float centerY = (topY + baseBottomY) * 0.5f + verticalOffset;
             cam.transform.position = new Vector3(gridCenter.x, centerY, -10);
             cam.orthographic = true;
 

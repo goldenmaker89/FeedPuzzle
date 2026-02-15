@@ -13,6 +13,10 @@ PrefabInstance:
       value: Unit_Red
       objectReference: {fileID: 0}
     - target: {fileID: 3229565381177560332, guid: f399996265d97814287bec2a842ad9db, type: 3}
+      propertyPath: unitSprite
+      value: 
+      objectReference: {fileID: -2446203892300535944, guid: 7e284105c7739fc499ec0b4a14a7e1f6, type: 3}
+    - target: {fileID: 3229565381177560332, guid: f399996265d97814287bec2a842ad9db, type: 3}
       propertyPath: useProgrammaticColor
       value: 0
       objectReference: {fileID: 0}

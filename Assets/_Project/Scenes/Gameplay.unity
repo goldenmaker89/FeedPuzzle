@@ -196,9 +196,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42dc3429cbf4fd54bbb0cdec95f0a1ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Grid.GridManager
-  width: 10
-  height: 20
-  cellSize: 0.4
+  width: 30
+  height: 35
+  cellSize: 0.12
   cellPrefab: {fileID: 5731184532907476555, guid: e0359f8a515d35044a074b6005030ac4, type: 3}
 --- !u!4 &417741326
 Transform:
@@ -438,8 +438,10 @@ MonoBehaviour:
   - {fileID: 1271601860794361956, guid: 1cef29614c3848d40a7434146f1ed079, type: 3}
   - {fileID: 7393978466021015040, guid: cae67c222c84bac44b0f71a41b68fba4, type: 3}
   - {fileID: 712626641634075935, guid: 7ee4c93e33104334aad104d84bccf025, type: 3}
-  slotSpacingMultiplier: 3
-  unitStackOffsetMultiplier: 4
+  slotSpacingMultiplier: 4
+  unitStackOffsetMultiplier: 4.5
+  unitSize: 0.23
+  useGridCellSizeForUnits: 0
 --- !u!4 &800352779
 Transform:
   m_ObjectHideFlags: 0
@@ -449,7 +451,7 @@ Transform:
   m_GameObject: {fileID: 800352777}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.21, y: -2, z: 0}
+  m_LocalPosition: {x: 0.32, y: -5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1636,6 +1638,8 @@ MonoBehaviour:
   occupiedSlotColor: {r: 0.5, g: 0.5, b: 0.2, a: 0.3}
   labelOffset: {x: 0, y: 0.5, z: 0}
   labelFontSize: 2.5
+  unitSize: 0.4
+  useGridCellSizeForUnits: 0
 --- !u!4 &1691617259
 Transform:
   m_ObjectHideFlags: 0
@@ -1645,7 +1649,7 @@ Transform:
   m_GameObject: {fileID: 1691617257}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.23, y: -2.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1684,6 +1688,7 @@ MonoBehaviour:
   gridHeight: 8
   numColors: 4
   fillPercent: 0.6
+  verticalOffset: 0
 --- !u!4 &2043355904
 Transform:
   m_ObjectHideFlags: 0

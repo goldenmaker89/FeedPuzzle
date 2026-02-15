@@ -24,6 +24,10 @@ namespace Gameplay.Mechanics
         [Tooltip("Multiplier for vertical spacing between units in a stack relative to cell size")]
         [SerializeField] private float unitStackOffsetMultiplier = 1.4f;
 
+        [Header("Unit Settings")]
+        [SerializeField] private float unitSize = 0.4f;
+        [SerializeField] private bool useGridCellSizeForUnits = false;
+
         private List<List<UnitController>> slots = new List<List<UnitController>>();
         private ConveyorBelt conveyorBelt;
         private LandingStrip landingStrip;
@@ -47,8 +51,19 @@ namespace Gameplay.Mechanics
             conveyorBelt = conveyor;
             landingStrip = strip;
             cellSize = cellSz;
-            slotSpacing = cellSize * slotSpacingMultiplier;
-            unitStackOffset = cellSize * unitStackOffsetMultiplier;
+
+            if (useGridCellSizeForUnits)
+            {
+                unitSize = cellSize;
+            }
+
+            // Use unitSize for spacing if we want layout to match units, 
+            // or cellSize if we want layout to match grid. 
+            // Usually layout should match the objects being laid out (units).
+            float layoutBaseSize = useGridCellSizeForUnits ? cellSize : unitSize;
+
+            slotSpacing = layoutBaseSize * slotSpacingMultiplier;
+            unitStackOffset = layoutBaseSize * unitStackOffsetMultiplier;
 
             slots.Clear();
             for (int i = 0; i < slotCount; i++)
@@ -121,7 +136,7 @@ namespace Gameplay.Mechanics
 
             UnitController unit = Instantiate(prefabToUse, transform);
             unit.Initialize(colorId, capacity);
-            unit.SetScale(cellSize);
+            unit.SetScale(unitSize);
             unit.gameObject.name = $"Unit_S{slotIndex}_C{colorId}_Cap{capacity}";
 
             slots[slotIndex].Add(unit);
@@ -206,6 +221,10 @@ namespace Gameplay.Mechanics
             unit.transform.SetParent(null);
             partner.transform.SetParent(null);
             linked.Initialize(unit, partner);
+            
+            // Set spacing based on unit size
+            float spacing = useGridCellSizeForUnits ? cellSize : unitSize;
+            linked.SetSpacing(spacing * 1.1f);
 
             conveyorBelt.AddUnit(linked);
 
@@ -353,8 +372,14 @@ namespace Gameplay.Mechanics
             if (gm != null) cellSize = gm.CellSize;
             else if (cellSize <= 0) cellSize = 0.4f;
 
-            slotSpacing = cellSize * slotSpacingMultiplier;
-            unitStackOffset = cellSize * unitStackOffsetMultiplier;
+            if (useGridCellSizeForUnits)
+            {
+                unitSize = cellSize;
+            }
+
+            float layoutBaseSize = useGridCellSizeForUnits ? cellSize : unitSize;
+            slotSpacing = layoutBaseSize * slotSpacingMultiplier;
+            unitStackOffset = layoutBaseSize * unitStackOffsetMultiplier;
 
             // Clear existing
             ClearPreview();

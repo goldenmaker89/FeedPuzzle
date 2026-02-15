@@ -23,6 +23,10 @@ namespace Gameplay.Mechanics
         [SerializeField] private Vector3 labelOffset = new Vector3(0, 0.5f, 0);
         [SerializeField] private float labelFontSize = 2.5f;
 
+        [Header("Unit Settings")]
+        [SerializeField] private float unitSize = 0.4f;
+        [SerializeField] private bool useGridCellSizeForUnits = false;
+
         private float slotSpacing = 0.6f;
         private List<UnitController> dockedUnits = new List<UnitController>();
         private ConveyorBelt conveyorBelt;
@@ -42,7 +46,15 @@ namespace Gameplay.Mechanics
         {
             conveyorBelt = conveyor;
             cellSize = cellSz;
-            slotSpacing = cellSize * slotSpacingMultiplier;
+
+            if (useGridCellSizeForUnits)
+            {
+                unitSize = cellSize;
+            }
+
+            float layoutBaseSize = useGridCellSizeForUnits ? cellSize : unitSize;
+            slotSpacing = layoutBaseSize * slotSpacingMultiplier;
+            
             CreateVisuals();
         }
 
@@ -54,6 +66,8 @@ namespace Gameplay.Mechanics
                 if (sv != null) Destroy(sv.gameObject);
             }
             slotVisuals.Clear();
+
+            float scaleBase = useGridCellSizeForUnits ? cellSize : unitSize;
 
             // Create slot indicator sprites
             for (int i = 0; i < capacity; i++)
@@ -68,8 +82,8 @@ namespace Gameplay.Mechanics
                 // Actually if sprite is null, nothing renders. We need a default sprite or the user must assign one.
                 // For now, let's assume user assigns one or we use a default white texture created at runtime if needed.
                 
-                float scale = (cellSize * 0.9f) / (spriteBaseSize > 0 ? spriteBaseSize : 1f);
-                if (slotSprite == null) scale = cellSize * 0.9f; // Fallback scaling
+                float scale = (scaleBase * 0.9f) / (spriteBaseSize > 0 ? spriteBaseSize : 1f);
+                if (slotSprite == null) scale = scaleBase * 0.9f; // Fallback scaling
 
                 slotObj.transform.localScale = Vector3.one * scale;
 
@@ -237,6 +251,10 @@ namespace Gameplay.Mechanics
             unit.transform.SetParent(null);
             partner.transform.SetParent(null);
             linked.Initialize(unit, partner);
+
+            // Set spacing based on unit size
+            float spacing = useGridCellSizeForUnits ? cellSize : unitSize;
+            linked.SetSpacing(spacing * 1.1f);
 
             conveyorBelt.AddUnit(linked);
 
