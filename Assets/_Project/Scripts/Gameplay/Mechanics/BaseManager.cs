@@ -18,6 +18,12 @@ namespace Gameplay.Mechanics
         [SerializeField] private UnitController unitPrefab;
         [SerializeField] private List<UnitController> unitPrefabsByColor;
 
+        [Header("Layout Settings")]
+        [Tooltip("Multiplier for horizontal spacing between slots relative to cell size")]
+        [SerializeField] private float slotSpacingMultiplier = 2.5f;
+        [Tooltip("Multiplier for vertical spacing between units in a stack relative to cell size")]
+        [SerializeField] private float unitStackOffsetMultiplier = 1.4f;
+
         private List<List<UnitController>> slots = new List<List<UnitController>>();
         private ConveyorBelt conveyorBelt;
         private LandingStrip landingStrip;
@@ -41,8 +47,8 @@ namespace Gameplay.Mechanics
             conveyorBelt = conveyor;
             landingStrip = strip;
             cellSize = cellSz;
-            slotSpacing = cellSize * 2f;
-            unitStackOffset = cellSize * 1.2f;
+            slotSpacing = cellSize * slotSpacingMultiplier;
+            unitStackOffset = cellSize * unitStackOffsetMultiplier;
 
             slots.Clear();
             for (int i = 0; i < slotCount; i++)
@@ -74,7 +80,11 @@ namespace Gameplay.Mechanics
             // Create slot labels
             foreach (var sl in slotLabels)
             {
-                if (sl != null) Destroy(sl.gameObject);
+                if (sl != null)
+                {
+                    if (Application.isPlaying) Destroy(sl.gameObject);
+                    else DestroyImmediate(sl.gameObject);
+                }
             }
             slotLabels.Clear();
 
@@ -302,5 +312,73 @@ namespace Gameplay.Mechanics
         {
             return transform.position + new Vector3(slotIndex * slotSpacing, 0, 0);
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, 0.2f);
+
+            if (slotCount <= 0) return;
+
+            // Try to get cell size from GridManager if not set
+            float effectiveCellSize = cellSize > 0 ? cellSize : 0.4f;
+            var gm = FindObjectOfType<GridManager>();
+            if (gm != null) effectiveCellSize = gm.CellSize;
+
+            float effectiveSlotSpacing = effectiveCellSize * slotSpacingMultiplier;
+            float effectiveStackOffset = effectiveCellSize * unitStackOffsetMultiplier;
+
+            for (int i = 0; i < slotCount; i++)
+            {
+                Vector3 slotPos = transform.position + new Vector3(i * effectiveSlotSpacing, 0, 0);
+                
+                // Draw slot base
+                Gizmos.color = new Color(1, 1, 0, 0.5f);
+                Gizmos.DrawWireCube(slotPos, new Vector3(effectiveCellSize, effectiveCellSize, 0.1f));
+
+                // Draw stack height
+                Gizmos.color = new Color(1, 1, 0, 0.2f);
+                Vector3 topOfStack = slotPos + new Vector3(0, -maxQueueDepth * effectiveStackOffset, 0);
+                Gizmos.DrawLine(slotPos, topOfStack);
+                Gizmos.DrawWireCube(topOfStack, new Vector3(effectiveCellSize * 0.8f, effectiveCellSize * 0.8f, 0.1f));
+            }
+        }
+
+        [ContextMenu("Generate Preview")]
+        private void GeneratePreview()
+        {
+            // Try to get cell size from GridManager
+            var gm = FindObjectOfType<GridManager>();
+            if (gm != null) cellSize = gm.CellSize;
+            else if (cellSize <= 0) cellSize = 0.4f;
+
+            slotSpacing = cellSize * slotSpacingMultiplier;
+            unitStackOffset = cellSize * unitStackOffsetMultiplier;
+
+            // Clear existing
+            ClearPreview();
+
+            CreateVisuals();
+        }
+
+        [ContextMenu("Clear Preview")]
+        private void ClearPreview()
+        {
+            var children = new List<GameObject>();
+            foreach (Transform child in transform) children.Add(child.gameObject);
+            
+            foreach (var child in children)
+            {
+                if (child.name.StartsWith("BaseLabel") || child.name.StartsWith("SlotLabel"))
+                {
+                    DestroyImmediate(child);
+                }
+            }
+            
+            labelText = null;
+            slotLabels.Clear();
+        }
+#endif
     }
 }

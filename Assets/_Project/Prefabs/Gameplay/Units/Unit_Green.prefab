@@ -17,6 +17,14 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3229565381177560332, guid: f399996265d97814287bec2a842ad9db, type: 3}
+      propertyPath: unitSprite
+      value: 
+      objectReference: {fileID: -2256367549329404254, guid: 2a014ba1219a5154aab04ed8c080d8ca, type: 3}
+    - target: {fileID: 3229565381177560332, guid: f399996265d97814287bec2a842ad9db, type: 3}
+      propertyPath: baseSpriteSize
+      value: 0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229565381177560332, guid: f399996265d97814287bec2a842ad9db, type: 3}
       propertyPath: useProgrammaticColor
       value: 0
       objectReference: {fileID: 0}

@@ -53,19 +53,19 @@ namespace Core
             int[] colorCounts = PopulateGrid(grid);
 
             // Position landing strip below grid (below conveyor bottom edge)
-            float conveyorOffset = 0.5f; // matches ConveyorBelt pathOffset
-            float landingY = gridOrigin.y - conveyorOffset - cellSize * 2.5f;
-            float landingSlotSpacing = cellSize * 1.5f;
-            float landingTotalWidth = (landing.Capacity - 1) * landingSlotSpacing;
-            float landingStartX = gridCenterX - landingTotalWidth * 0.5f;
-            landing.transform.position = new Vector3(landingStartX, landingY, 0);
+            // float conveyorOffset = 0.5f; // matches ConveyorBelt pathOffset
+            // float landingY = gridOrigin.y - conveyorOffset - cellSize * 2.5f;
+            // float landingSlotSpacing = cellSize * 1.5f;
+            // float landingTotalWidth = (landing.Capacity - 1) * landingSlotSpacing;
+            // float landingStartX = gridCenterX - landingTotalWidth * 0.5f;
+            // landing.transform.position = new Vector3(landingStartX, landingY, 0);
 
             // Base: below landing strip
-            float baseSlotSpacing = cellSize * 2f;
-            float baseTotalWidth = (baseM.SlotCount - 1) * baseSlotSpacing;
-            float baseY = landingY - cellSize * 5f;
-            float baseStartX = gridCenterX - baseTotalWidth * 0.5f;
-            baseM.transform.position = new Vector3(baseStartX, baseY, 0);
+            // float baseSlotSpacing = cellSize * 2f;
+            // float baseTotalWidth = (baseM.SlotCount - 1) * baseSlotSpacing;
+            // float baseY = landingY - cellSize * 5f;
+            // float baseStartX = gridCenterX - baseTotalWidth * 0.5f;
+            // baseM.transform.position = new Vector3(baseStartX, baseY, 0);
 
             // Populate base with units that match the grid colors
             PopulateBase(colorCounts, baseM);
