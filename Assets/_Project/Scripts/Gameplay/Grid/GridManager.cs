@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Gameplay.Grid
 {
+    [ExecuteAlways]
     public class GridManager : MonoBehaviour
     {
         [SerializeField] private int width = 8;
@@ -41,12 +42,18 @@ namespace Gameplay.Grid
         private void DoInit()
         {
             // Clear old visuals if any
-            if (cellViews != null)
+            // In editor, we might have children that are not tracked in cellViews (e.g. after recompile)
+            // So we should clear all children that look like cells
+            var children = new List<GameObject>();
+            foreach (Transform child in transform) children.Add(child.gameObject);
+            
+            foreach (var child in children)
             {
-                for (int x = 0; x < cellViews.GetLength(0); x++)
-                    for (int y = 0; y < cellViews.GetLength(1); y++)
-                        if (cellViews[x, y] != null)
-                            Destroy(cellViews[x, y].gameObject);
+                if (child.name.StartsWith("Cell_"))
+                {
+                    if (Application.isPlaying) Destroy(child);
+                    else DestroyImmediate(child);
+                }
             }
 
             grid = new Cell[width, height];
@@ -189,6 +196,23 @@ namespace Gameplay.Grid
         public bool IsCleared()
         {
             return totalChips <= 0;
+        }
+
+        private void OnValidate()
+        {
+            // Re-initialize when values change in editor
+            if (!Application.isPlaying)
+            {
+                DoInit();
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            Vector3 origin = transform.position;
+            Vector3 size = new Vector3(width * cellSize, height * cellSize, 0);
+            Gizmos.DrawWireCube(origin + size * 0.5f, size);
         }
     }
 }

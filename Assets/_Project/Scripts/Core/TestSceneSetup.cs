@@ -72,7 +72,7 @@ namespace Core
             PopulateBase(colorCounts, baseM);
 
             // Center camera to show everything
-            CenterCamera(grid, baseM, landing);
+            // CenterCamera(grid, baseM, landing);
 
             int totalUnits = 0;
             for (int i = 0; i < baseM.SlotCount; i++)

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Gameplay.Units;
+using Gameplay.Grid;
 using TMPro;
 
 namespace Gameplay.Mechanics
@@ -11,6 +12,7 @@ namespace Gameplay.Mechanics
     /// Player can click a docked unit to re-launch it onto the conveyor.
     /// Linked pairs take 2 slots.
     /// </summary>
+    [ExecuteAlways]
     public class LandingStrip : MonoBehaviour
     {
         [SerializeField] private int capacity = 5;
@@ -63,9 +65,28 @@ namespace Gameplay.Mechanics
             // Clear old visuals
             foreach (var sv in slotVisuals)
             {
-                if (sv != null) Destroy(sv.gameObject);
+                if (sv != null)
+                {
+                    if (Application.isPlaying) Destroy(sv.gameObject);
+                    else DestroyImmediate(sv.gameObject);
+                }
             }
             slotVisuals.Clear();
+
+            // Also clear any children that might be left over in editor
+            if (!Application.isPlaying)
+            {
+                var children = new List<GameObject>();
+                foreach (Transform child in transform) children.Add(child.gameObject);
+                foreach (var child in children)
+                {
+                    if (child.name.StartsWith("LandingSlot_") || child.name.StartsWith("LandingLabel"))
+                    {
+                        DestroyImmediate(child);
+                    }
+                }
+                labelText = null;
+            }
 
             float scaleBase = useGridCellSizeForUnits ? cellSize : unitSize;
 
@@ -313,6 +334,39 @@ namespace Gameplay.Mechanics
         public bool TryRelaunchByUnit(UnitController unit)
         {
             return TryRelaunch(unit);
+        }
+
+        private void OnValidate()
+        {
+            if (!Application.isPlaying)
+            {
+                // Try to get cell size from GridManager
+                var gm = FindObjectOfType<GridManager>();
+                if (gm != null) cellSize = gm.CellSize;
+                else if (cellSize <= 0) cellSize = 0.4f;
+
+                if (useGridCellSizeForUnits)
+                {
+                    unitSize = cellSize;
+                }
+
+                float layoutBaseSize = useGridCellSizeForUnits ? cellSize : unitSize;
+                slotSpacing = layoutBaseSize * slotSpacingMultiplier;
+
+                CreateVisuals();
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, 0.2f);
+
+            for (int i = 0; i < capacity; i++)
+            {
+                Vector3 slotPos = transform.position + new Vector3(i * slotSpacing, 0, 0);
+                Gizmos.DrawWireCube(slotPos, new Vector3(unitSize, unitSize, 0.1f));
+            }
         }
     }
 }

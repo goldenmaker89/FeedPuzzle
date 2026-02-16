@@ -11,6 +11,7 @@ namespace Gameplay.Mechanics
     /// Player taps the top (front) unit of a slot to send it to the Conveyor.
     /// Linked units can only be launched when both are at the front of their respective slots.
     /// </summary>
+    [ExecuteAlways]
     public class BaseManager : MonoBehaviour
     {
         [SerializeField] private int slotCount = 4;
@@ -397,12 +398,21 @@ namespace Gameplay.Mechanics
             {
                 if (child.name.StartsWith("BaseLabel") || child.name.StartsWith("SlotLabel"))
                 {
-                    DestroyImmediate(child);
+                    if (Application.isPlaying) Destroy(child);
+                    else DestroyImmediate(child);
                 }
             }
             
             labelText = null;
             slotLabels.Clear();
+        }
+
+        private void OnValidate()
+        {
+            if (!Application.isPlaying)
+            {
+                GeneratePreview();
+            }
         }
 #endif
     }

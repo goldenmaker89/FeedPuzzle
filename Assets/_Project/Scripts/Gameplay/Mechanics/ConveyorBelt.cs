@@ -11,6 +11,7 @@ namespace Gameplay.Mechanics
     ///   Bottom edge (left→right), Right edge (bottom→top), Top edge (right→left), Left edge (top→bottom).
     /// Each waypoint stores which edge and cell index it corresponds to, so units can scan.
     /// </summary>
+    [ExecuteAlways]
     public class ConveyorBelt : MonoBehaviour
     {
         [SerializeField] private GridManager gridManager;
@@ -27,6 +28,10 @@ namespace Gameplay.Mechanics
         private List<WaypointInfo> waypointInfos = new List<WaypointInfo>(); // parallel to pathPoints
         private List<ConveyorItem> itemsOnBelt = new List<ConveyorItem>();
         private bool initialized;
+        private Vector3 lastGridPos;
+        private int lastGridWidth;
+        private int lastGridHeight;
+        private float lastGridCellSize;
 
         // Visual
         private LineRenderer lineRenderer;
@@ -197,6 +202,28 @@ namespace Gameplay.Mechanics
 
         private void Update()
         {
+            if (!Application.isPlaying)
+            {
+                if (gridManager != null)
+                {
+                    bool changed = false;
+                    if (gridManager.transform.position != lastGridPos) changed = true;
+                    if (gridManager.Width != lastGridWidth) changed = true;
+                    if (gridManager.Height != lastGridHeight) changed = true;
+                    if (Mathf.Abs(gridManager.CellSize - lastGridCellSize) > 0.001f) changed = true;
+
+                    if (changed)
+                    {
+                        Initialize(gridManager);
+                        lastGridPos = gridManager.transform.position;
+                        lastGridWidth = gridManager.Width;
+                        lastGridHeight = gridManager.Height;
+                        lastGridCellSize = gridManager.CellSize;
+                    }
+                }
+                return;
+            }
+
             // Clean up null references and completed items
             for (int i = itemsOnBelt.Count - 1; i >= 0; i--)
             {
@@ -229,6 +256,20 @@ namespace Gameplay.Mechanics
             for (int i = 0; i < pathPoints.Count - 1; i++)
             {
                 Gizmos.DrawLine(pathPoints[i], pathPoints[i + 1]);
+            }
+        }
+
+        private void OnValidate()
+        {
+            if (!Application.isPlaying)
+            {
+                if (gridManager == null)
+                    gridManager = FindObjectOfType<GridManager>();
+                
+                if (gridManager != null)
+                {
+                    Initialize(gridManager);
+                }
             }
         }
     }
