@@ -3,13 +3,13 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-public class UpdateLevelEditorUI_v12
+public class UpdateLevelEditorUI_v11
 {
     public static string Execute()
     {
         Cleanup();
         BuildUI();
-        return "Level Editor UI Updated Successfully (v12)";
+        return "Level Editor UI Updated Successfully (v11)";
     }
 
     private static void Cleanup()
