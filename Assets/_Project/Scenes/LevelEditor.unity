@@ -3592,7 +3592,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelEditor.LevelEditorSaveManager
   gridManager: {fileID: 1047706749}
+  unitGenerator: {fileID: 0}
   saveButton: {fileID: 1062917834}
+  loadButton: {fileID: 205535882}
   currentLevelNumber: 1
 --- !u!1 &57255573
 GameObject:
@@ -29466,7 +29468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  m_Color: {r: 0.2, g: 0.8, b: 0.3, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -37355,6 +37357,7 @@ GameObject:
   - component: {fileID: 721431771}
   - component: {fileID: 721431770}
   - component: {fileID: 721431769}
+  - component: {fileID: 721431772}
   m_Layer: 0
   m_Name: AutoBalanceArea
   m_TagString: Untagged
@@ -37449,6 +37452,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 721431767}
   m_CullTransparentMesh: 1
+--- !u!114 &721431772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721431767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970a9b15aaaa75b4490fd6356976dc83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelEditor.LevelEditorUnitGenerator
+  gridManager: {fileID: 1047706749}
+  generateButton: {fileID: 2125615912}
+  difficultySlider: {fileID: 602471229}
+  unitTimelineContainer: {fileID: 1028071231}
+  unitIconPrefab: {fileID: 4292558676508615594, guid: 8d3a40e7f22f86e419782c87b86739ce, type: 3}
+  maxUnitsPerSlot: 6
+  slotCount: 4
 --- !u!1 &721655679
 GameObject:
   m_ObjectHideFlags: 0
@@ -67918,11 +67940,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<color=green>Balance OK</color>
-
-    Total HP: 540
-
-    Grid Blocks: 540'
+  m_text: "Total HP: \n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -87029,7 +87047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  m_Color: {r: 0.2, g: 0.4, b: 0.9, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -91205,7 +91223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  m_Color: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -99132,6 +99150,7 @@ GameObject:
   - component: {fileID: 2057622930}
   - component: {fileID: 2057622929}
   - component: {fileID: 2057622928}
+  - component: {fileID: 2057622931}
   m_Layer: 0
   m_Name: StatusPanel
   m_TagString: Untagged
@@ -99217,6 +99236,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2057622926}
   m_CullTransparentMesh: 1
+--- !u!114 &2057622931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057622926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: accf8b68dbff0174593d9474d4bb22ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelEditor.LevelEditorStatsDisplay
+  gridManager: {fileID: 1047706749}
+  statusText: {fileID: 1372729101}
 --- !u!1 &2060681454
 GameObject:
   m_ObjectHideFlags: 0

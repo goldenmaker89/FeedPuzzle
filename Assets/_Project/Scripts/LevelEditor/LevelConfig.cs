@@ -11,6 +11,7 @@ namespace LevelEditor
         public int width;
         public int height;
         public List<CellData> cells = new List<CellData>();
+        public List<UnitStackData> unitStacks = new List<UnitStackData>();
     }
 
     [Serializable]
@@ -20,5 +21,19 @@ namespace LevelEditor
         public int y;
         public int colorId;
         public bool isOccupied;
+    }
+
+    [Serializable]
+    public class UnitStackData
+    {
+        public int slotIndex;
+        public List<UnitData> units = new List<UnitData>();
+    }
+
+    [Serializable]
+    public class UnitData
+    {
+        public int colorId;
+        public int hp;
     }
 }

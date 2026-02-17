@@ -35,9 +35,12 @@ namespace LevelEditor
         public int Height => height;
         public bool IsInitialized => cellViews != null && grid != null;
 
+        public event System.Action OnGridChanged;
+
         private void Start()
         {
             InitializeGrid();
+            ClearGrid();
         }
 
         private void Update()
@@ -254,18 +257,50 @@ namespace LevelEditor
             }
         }
 
+        public void ClearGrid()
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    SetCellColor(x, y, 0, false);
+                }
+            }
+            OnGridChanged?.Invoke();
+        }
+
         public void SetCellColor(int x, int y, int colorId)
+        {
+            SetCellColor(x, y, colorId, true);
+        }
+
+        public void NotifyGridChanged()
+        {
+            OnGridChanged?.Invoke();
+        }
+
+        public void SetCellColor(int x, int y, int colorId, bool notify)
         {
             if (x >= 0 && x < width && y >= 0 && y < height)
             {
+                bool changed = false;
                 if (grid != null)
                 {
-                    grid[x, y].ColorId = colorId;
-                    grid[x, y].IsOccupied = colorId > 0;
+                    if (grid[x, y].ColorId != colorId)
+                    {
+                        grid[x, y].ColorId = colorId;
+                        grid[x, y].IsOccupied = colorId > 0;
+                        changed = true;
+                    }
                 }
                 if (cellViews != null && cellViews[x, y] != null)
                 {
                     cellViews[x, y].SetColor(colorId);
+                }
+
+                if (changed && notify)
+                {
+                    OnGridChanged?.Invoke();
                 }
             }
         }
