@@ -1,6 +1,7 @@
 using UnityEngine;
 using Gameplay.Grid;
 using Gameplay.Mechanics;
+using LevelEditor;
 
 namespace Core
 {
@@ -15,6 +16,9 @@ namespace Core
 
     /// <summary>
     /// Central game manager. Initializes all systems in the correct order.
+    /// If a TestSceneSetup component with a loaded LevelConfig is present,
+    /// the grid is created with the level's dimensions; otherwise the
+    /// serialized defaults on GridManager are used.
     /// </summary>
     public class GameManager : MonoBehaviour
     {
@@ -65,11 +69,29 @@ namespace Core
 
         private void InitializeSystems()
         {
+            // Try to obtain the level configuration loaded by TestSceneSetup.Awake()
+            LevelConfig levelConfig = null;
+            var levelSetup = FindFirstObjectByType<TestSceneSetup>();
+            if (levelSetup != null)
+            {
+                levelConfig = levelSetup.LoadedConfig;
+            }
+
             float cellSize = gridManager != null ? gridManager.CellSize : 0.4f;
 
-            // 1. Grid
+            // 1. Grid — use level config dimensions when available
             if (gridManager != null)
-                gridManager.InitializeGrid();
+            {
+                if (levelConfig != null)
+                {
+                    gridManager.InitializeGrid(levelConfig.width, levelConfig.height, cellSize);
+                    Debug.Log($"[GameManager] Grid initialised from level config: {levelConfig.width}x{levelConfig.height}");
+                }
+                else
+                {
+                    gridManager.InitializeGrid();
+                }
+            }
 
             // 2. Conveyor (needs grid)
             if (conveyorBelt != null && gridManager != null)
